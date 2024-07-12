@@ -10,9 +10,15 @@ provider:
   runtime: nodejs20.x
 
 functions:
-  account:
-    handler: handler.create
+  create:
+    handler: create.handler
     events:
       - httpApi:
-          path: /
+          path: /account
           method: post
+  get:
+    handler: get.handler
+    events:
+      - httpApi:
+          path: /account/{id}
+          method: get
