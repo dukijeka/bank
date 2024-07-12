@@ -15,6 +15,4 @@ export const handler: Handler = async (_) => {
       body: JSON.stringify({error: e.message}),
     };
   }
-
-
 };

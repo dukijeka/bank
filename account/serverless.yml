@@ -11,14 +11,21 @@ provider:
 
 functions:
   create:
-    handler: create.handler
+    handler: api/create.handler
     events:
       - httpApi:
           path: /account
           method: post
   get:
-    handler: get.handler
+    handler: api/get.handler
     events:
       - httpApi:
           path: /account/{id}
           method: get
+
+  addCurrency:
+    handler: api/currency/add.handler
+    events:
+      - httpApi:
+          path: /account/{id}/currency
+          method: post
