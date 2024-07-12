@@ -11,8 +11,8 @@ provider:
 
 functions:
   account:
-    handler: handler.account
+    handler: handler.create
     events:
       - httpApi:
           path: /
-          method: get
+          method: post
