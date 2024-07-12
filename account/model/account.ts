@@ -3,7 +3,6 @@ import { Wallet } from "./wallet";
 
 interface Account {
     _id: ObjectId,
-    supportedCurrencies: string[],
     wallets: Wallet[]
 }
 
