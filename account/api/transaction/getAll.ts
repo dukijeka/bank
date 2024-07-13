@@ -1,14 +1,14 @@
 import {Handler} from "aws-lambda";
-import {WalletService} from "../../service/walletService";
+import {TransactionService} from "../../service/transactionService";
 
 export const handler: Handler = async (event) => {
     try {
-        const account =
-            await WalletService.addCurrency(event.pathParameters.accountId, event.pathParameters.currencyName);
+        const transaction =
+            await TransactionService.getTransactions(event.pathParameters.accountId);
 
         return {
-            statusCode: 201,
-            body: JSON.stringify(account),
+            statusCode: 200,
+            body: JSON.stringify(transaction),
         };
     } catch (e: any) {
         return {

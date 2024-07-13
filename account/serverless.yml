@@ -9,23 +9,50 @@ provider:
   name: aws
   runtime: nodejs20.x
 
+stages:
+  prod: # Rename to whatever your production Stage is to ensure Observability is enabled.
+    observability: true
+  default: # This will disable observability for every Stage other than your production Stage.
+    observability: false
+
 functions:
   create:
     handler: api/create.handler
     events:
       - httpApi:
-          path: /account
+          path: /accounts
           method: post
   get:
     handler: api/get.handler
     events:
       - httpApi:
-          path: /account/{id}
+          path: /accounts/{accountId}
           method: get
 
   addCurrency:
     handler: api/currency/add.handler
     events:
       - httpApi:
-          path: /account/{id}/currency
+          path: /accounts/{accountId}/currencies/{currencyName}
           method: post
+
+  removeCurrency:
+    handler: api/currency/remove.handler
+    events:
+      - httpApi:
+          path: /accounts/{accountId}/currencies/{currencyName}
+          method: delete
+
+  applyTransaction:
+    handler: api/transaction/apply.handler
+    events:
+      - httpApi:
+          path: /accounts/{accountId}/transactions
+          method: post
+
+  getAllTranasctions:
+    handler: api/transaction/getAll.handler
+    events:
+      - httpApi:
+          path: /accounts/{accountId}/transactions
+          method: get

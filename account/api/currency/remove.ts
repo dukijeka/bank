@@ -3,12 +3,10 @@ import {WalletService} from "../../service/walletService";
 
 export const handler: Handler = async (event) => {
     try {
-        const account =
-            await WalletService.addCurrency(event.pathParameters.accountId, event.pathParameters.currencyName);
+        await WalletService.removeCurrency(event.pathParameters.accountId, event.pathParameters.currencyName);
 
         return {
-            statusCode: 201,
-            body: JSON.stringify(account),
+            statusCode: 204,
         };
     } catch (e: any) {
         return {
