@@ -32,8 +32,6 @@ export class TransactionService {
                 throw new Error(`Missing transaction`, {cause: {statusCode: 400}});
             }
 
-            const currency = transaction.currency;
-
             if (transaction.type === TransactionType.inbound) {
                 account = await this.applyInboundTransaction(account, transaction, client);
             }
@@ -62,7 +60,7 @@ export class TransactionService {
             );
         }
 
-        return await this.addMoneyToWalletFromTransaction(account, transaction, walletToUpdate, client);
+        return await this.applyTransactionToWallet(account, transaction, walletToUpdate, client);
     }
 
     private static async applyOutboundTransaction(account: Account, transaction: Transaction, client: MongoClient): Promise<Account> {
@@ -81,10 +79,10 @@ export class TransactionService {
             );
         }
 
-        return await this.addMoneyToWalletFromTransaction(account, transaction, walletToUpdate, client);
+        return await this.applyTransactionToWallet(account, transaction, walletToUpdate, client);
     }
 
-    private static async addMoneyToWalletFromTransaction(account: Account, transaction: Transaction, walletToUpdate: Wallet, client: MongoClient) {
+    private static async applyTransactionToWallet(account: Account, transaction: Transaction, walletToUpdate: Wallet, client: MongoClient) {
         if (transaction.type === TransactionType.inbound) {
             walletToUpdate.balance += transaction.amount;
         }
