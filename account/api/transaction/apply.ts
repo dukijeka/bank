@@ -3,8 +3,13 @@ import {TransactionService} from "../../service/transactionService";
 
 export const handler: Handler = async (event) => {
     try {
+        const accountId = event.pathParameters.accountId;
+        const transaction = JSON.parse(event.body);
+        
         const account =
-            await TransactionService.applyTransaction(event.pathParameters.accountId, JSON.parse(event.body));
+            await TransactionService.applyTransaction(accountId, transaction);
+
+        await TransactionService.publishTransactionEvent(accountId, transaction);
 
         return {
             statusCode: 200,

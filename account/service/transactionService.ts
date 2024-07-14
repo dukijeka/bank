@@ -3,6 +3,7 @@ import Account from "../model/account";
 import getMongoDbClient from "./dbClient/getMongoClient";
 import {Transaction, TransactionType} from "../model/transaction";
 import {Wallet} from "../model/wallet";
+import {EventBridge} from "aws-sdk";
 import {AccountService} from "./accountService";
 
 const accoountsCollectionName = "accounts";
@@ -48,6 +49,32 @@ export class TransactionService {
 
     public static async getTransactions(accountId: string): Promise<Transaction[]> {
         return (await AccountService.getAccountById(accountId)).transactions;
+    }
+
+    public static async publishTransactionEvent(accountId: string, transaction: Transaction): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const eventbridge = new EventBridge();
+            eventbridge.putEvents({
+                Entries: [ {
+                    Source: "aws.lambda",
+                    DetailType: "AWS API Call via CloudTrail",
+                    Detail: JSON.stringify({
+                        eventSource: "lambda.amazonaws.com",
+                        transaction: {
+                            ...transaction,
+                            publishedOn: Date(),
+                            accountId: accountId
+                        }
+                    })
+                }]
+            }, (err, _) => {
+                if (err) {
+                    reject(new Error(err.message, {cause: {statusCode: 500}}))
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     private static async applyInboundTransaction(account: Account, transaction: Transaction, client: MongoClient): Promise<Account> {
