@@ -6,7 +6,7 @@ Install node and serverless framework.
 
 Create account on https://cloud.mongodb.com/, with database named 'bank' and 2 collections named 'accounts' and 'reports'
 
-Add environment variable MONGODB_CONNECTION_STRING = mongodb+srv://<USERNAME>:<PASSWORD>@cluster0.wk0bgdl.mongodb.net/?retryWrites=true&w=majority&appName=<APP_NAME> to your local env and lambdas on aws.
+Add environment variable MONGODB_CONNECTION_STRING = mongodb+srv://<_USRERNAME>:<_PASSWORD>@cluster0.wk0asdl.mongodb.net/?retryWrites=true&w=majority&appName=<APP_NAME> to your local env and lambdas on aws.
 
 # dev env and deployment
 
@@ -63,3 +63,17 @@ Return format:
 </pre>
 ### GET - https://g433ykm5fa.execute-api.us-east-1.amazonaws.com/accounts/{accountId}/transactions
 Returns list of transactions for account with `accountId`.
+
+## Accounts service
+
+### onTransactionPublished
+This function doesn't represent API endpoint, but it's triggered by Event bridge rule,
+when apply transaction function sends the event to the event bus. 
+It stores the transaction in `reports' collection.
+
+### GET - https://9ado1ker52.execute-api.us-east-1.amazonaws.com/reports/{accountId}
+Returns transactions from `reports` collection for the account with `accountId`,
+for the current month. In real world application these would be transactions from the past, and not current month,
+but I implemented it this way so its easier to test.
+
+# Architecture
