@@ -74,6 +74,20 @@ It stores the transaction in `reports' collection.
 ### GET - https://9ado1ker52.execute-api.us-east-1.amazonaws.com/reports/{accountId}
 Returns transactions from `reports` collection for the account with `accountId`,
 for the current month. In real world application these would be transactions from the past, and not current month,
-but I implemented it this way so its easier to test.
+but I implemented it this way, so it's easier to test.
 
 # Architecture
+
+In this sample application, I've separated the code into `api`, `model` and `service` folders.
+
+- `api` folder contains function code, separated by domain.
+- `model` folder contains TS interfaces used by the code in `api` and `service` folders.
+- `service` folder contains code that interacts with DB and application logic. 
+In real-world application, it would be better to separate business logic, 
+perhaps with clean architecture pattern. Currently, the method inside services are static, 
+but with separated business logic, we could use dependency injection to make it more testable.
+
+# Scalability and performance
+
+Current schema in `reports` folder is not very efficient for high number of transactions in the collection.
+We could organize them by account and/or month to optimize reading.
