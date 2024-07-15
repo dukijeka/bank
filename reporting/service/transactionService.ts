@@ -29,9 +29,14 @@ export class TransactionService {
         try {
             await client.connect();
 
-            const boundsOfCurrentMonth = this.getcurrentMonthUtcMillisecondsBounds();
-            return await client.db(bankDbName).collection(accountsCollectionName) // TODO filter for current month
-                .find<Transaction>({}, {projection: {accountId: accountId}}).toArray();
+            const boundsOfCurrentMonth = this.getCurrentMonthUtcMillisecondsBounds();
+            console.log(boundsOfCurrentMonth);
+            return await client.db(bankDbName).collection(accountsCollectionName)
+                .find<Transaction>(
+                    {
+                        accountId: accountId,
+                        publishedOn: {$gte: boundsOfCurrentMonth.beginning, $lte: boundsOfCurrentMonth.end}
+                    }).toArray();
 
         } catch
             (e) {
@@ -41,19 +46,19 @@ export class TransactionService {
         }
     }
 
-    private static getcurrentMonthUtcMillisecondsBounds(): { begining: number, end: number } {
+    private static getCurrentMonthUtcMillisecondsBounds(): { beginning: number, end: number } {
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
-        const beginningOfCurrentMonth = new Date(currentYear, currentMonth, 1).getUTCMilliseconds();
+        const beginningOfCurrentMonth = (new Date(currentYear, currentMonth, 1)).getTime();
 
         let beginningOfNextMonth: number;
 
         if (currentMonth === 11) {
-            beginningOfNextMonth = new Date(currentYear + 1, 0, 1).getUTCMilliseconds();
+            beginningOfNextMonth = new Date(currentYear + 1, 0, 1).getTime();
         } else {
-            beginningOfNextMonth = new Date(currentYear, currentMonth + 1, 1).getUTCMilliseconds();
+            beginningOfNextMonth = new Date(currentYear, currentMonth + 1, 1).getTime();
         }
 
-        return {begining: beginningOfCurrentMonth, end: beginningOfNextMonth - 1};
+        return {beginning: beginningOfCurrentMonth, end: beginningOfNextMonth - 1};
     }
 }

@@ -4,7 +4,7 @@ import {TransactionService} from "../service/transactionService";
 export const handler: Handler = async (event) => {
     try {
         const accountId = event.pathParameters.accountId;
-        const transactions = TransactionService.getTransactionsForCurrentMonthForAccount(accountId);
+        const transactions = await TransactionService.getTransactionsForCurrentMonthForAccount(accountId);
 
         return {
             statusCode: 200,
