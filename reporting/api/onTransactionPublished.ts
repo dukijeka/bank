@@ -4,13 +4,11 @@ import {TransactionService} from "../service/transactionService";
 
 export const handler: Handler<EventBridgeEvent<any, any>> = async (event: EventBridgeEvent<any, any>) => {
   try {
-    const transaction: Transaction = JSON.parse(event.detail);
-
-    const account = await TransactionService.storePublishedTransaction(transaction);
+    const transaction: Transaction = event.detail.transaction;
+    await TransactionService.storePublishedTransaction(transaction);
 
     return {
-      statusCode: 201,
-      body: JSON.stringify(account),
+      statusCode: 200,
     };
   } catch (e: any) {
     return {

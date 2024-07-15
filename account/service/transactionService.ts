@@ -3,7 +3,7 @@ import Account from "../model/account";
 import getMongoDbClient from "./dbClient/getMongoClient";
 import {Transaction, TransactionType} from "../model/transaction";
 import {Wallet} from "../model/wallet";
-import {EventBridge} from "aws-sdk";
+import * as AWS from "aws-sdk";
 import {AccountService} from "./accountService";
 
 const accoountsCollectionName = "accounts";
@@ -53,16 +53,16 @@ export class TransactionService {
 
     public static async publishTransactionEvent(accountId: string, transaction: Transaction): Promise<void> {
         return new Promise((resolve, reject) => {
-            const eventbridge = new EventBridge();
+            AWS.config.update({ region: "us-east-1" });
+            const eventbridge = new AWS.EventBridge();
             eventbridge.putEvents({
                 Entries: [ {
-                    Source: "aws.lambda",
-                    DetailType: "AWS API Call via CloudTrail",
+                    Source: "accountsLambda.apply.transaction",
+                    DetailType: "transaction",
                     Detail: JSON.stringify({
-                        eventSource: "lambda.amazonaws.com",
                         transaction: {
                             ...transaction,
-                            publishedOn: Date(),
+                            publishedOn: (new Date()).getUTCMilliseconds(),
                             accountId: accountId
                         }
                     })

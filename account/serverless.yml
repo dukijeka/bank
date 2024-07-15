@@ -8,6 +8,14 @@ service: account
 provider:
   name: aws
   runtime: nodejs20.x
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "events:PutEvents"
+          Resource:
+            Fn::Sub: "arn:aws:events:us-east-1:123403429298:event-bus/default"
 
 stages:
   prod: # Rename to whatever your production Stage is to ensure Observability is enabled.

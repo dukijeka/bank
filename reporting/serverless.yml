@@ -10,14 +10,17 @@ provider:
 
 functions:
   onTransactionPublished:
-    handler: onTransactionPublished/handler.onTransactionPublished
+    handler: api/onTransactionPublished.handler
     events:
       - eventBridge:
-        pattern:
-          source:
-            - aws.lambda
-          detail-type:
-            - AWS API Call via CloudTrail
-          detail:
-            eventSource:
-              - lambda.amazonaws.com
+          pattern:
+            source:
+              - accountsLambda.apply.transaction
+            detail-type:
+              - transaction
+  getMonthlyStatement:
+    handler: api/getMonthlyStatement.handler
+    events:
+      - httpApi:
+          path: /reports/{accountId}
+          method: get
