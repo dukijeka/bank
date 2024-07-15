@@ -62,7 +62,7 @@ export class TransactionService {
                     Detail: JSON.stringify({
                         transaction: {
                             ...transaction,
-                            publishedOn: (new Date()).getUTCMilliseconds(),
+                            publishedOn: Date.now(),
                             accountId: accountId
                         }
                     })
