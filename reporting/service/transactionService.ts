@@ -41,9 +41,7 @@ export class TransactionService {
         }
     }
 
-    private static
-
-    getcurrentMonthUtcMillisecondsBounds(): { begining: number, end: number } {
+    private static getcurrentMonthUtcMillisecondsBounds(): { begining: number, end: number } {
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
         const beginningOfCurrentMonth = new Date(currentYear, currentMonth, 1).getUTCMilliseconds();
