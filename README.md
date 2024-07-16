@@ -20,24 +20,34 @@ To deploy the app, run sls deploy from /account or /reporting folders
 
 ### POST - https://g433ykm5fa.execute-api.us-east-1.amazonaws.com/accounts
 Creates a new account. Returns an account.
-Response format: 
+#### Response format: 
 <pre>{
     "_id":"b35d9a880000000000000000",
     "transactions":[],
     "wallets":[]
 }</pre>
+#### Response error codes
+- 500 in case of any failure
 ### GET - https://g433ykm5fa.execute-api.us-east-1.amazonaws.com/accounts/{accountId}
 Returns an account with `_id = accountID`
-Response format:
+#### Response format:
 <pre>{
     "_id":"b35d9a880000000000000000",
     "transactions":[],
     "wallets":[]
 }</pre>
+#### Response error codes
+- 404 in case the account with `accountId` hasn't been found
 ### POST - https://g433ykm5fa.execute-api.us-east-1.amazonaws.com/accounts/{accountId}/currencies/{currencyName}
 Create a wallet with the new currency. Returns an account.
+#### Response error codes:
+- 404 if account with `accountId` hasn't been found
+- 409 if the account already has `currency` provided
+- 500 in case of an unhandled exception
 ### DELETE - https://g433ykm5fa.execute-api.us-east-1.amazonaws.com/accounts/{accountId}/currencies/{currencyName}
 Removes wallet with currency `currencyName`
+- 404 if account with `accountId` hasn't been found, or if the account doesn't have the currency that needs to be deleted
+- 500 in case of an unhandled exception
 ### POST - https://g433ykm5fa.execute-api.us-east-1.amazonaws.com/accounts/{accountId}/transactions
 Creates the new translation.
 Request format:
@@ -49,7 +59,7 @@ Request format:
 }
 </pre>
 
-Return format:
+#### Response format:
 <pre>
 {
 "_id":"adb4097d0000000000000000",
@@ -61,9 +71,14 @@ Return format:
 ],
 "wallets":[{"currency":"usd","balance":90}]}
 </pre>
+#### Response error codes
+- 404 if account with `accountId` hasn't been found, or if the account doesn't have the currency that needs to be deleted
+- 400 in case the request body is missing
+- 500 if publishing event to `EventBridge` failed or in case of an unhandled exception
 ### GET - https://g433ykm5fa.execute-api.us-east-1.amazonaws.com/accounts/{accountId}/transactions
 Returns list of transactions for account with `accountId`.
-
+#### Response error codes
+- 404 if account with `accountId` hasn't been found
 ## Accounts service
 
 ### onTransactionPublished

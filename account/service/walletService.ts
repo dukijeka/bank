@@ -1,4 +1,4 @@
-import {MongoClient, ObjectId} from "mongodb";
+import {ObjectId} from "mongodb";
 import Account from "../model/account";
 import getMongoDbClient from "./dbClient/getMongoClient";
 
@@ -22,10 +22,6 @@ export class WalletService {
 
             if (account === null) {
                 throw new Error(`Account with id ${accountId} does not exist`, {cause: {statusCode: 404}});
-            }
-
-            if (!currency) {
-                throw new Error(`Currency not provided`, {cause: {statusCode: 400}});
             }
 
             if (account.wallets.some(wallet => wallet.currency === currency)) {
@@ -66,9 +62,6 @@ export class WalletService {
                 throw new Error(`Account with id ${accountId} does not exist`, {cause: {statusCode: 404}});
             }
 
-            if (!currency) {
-                throw new Error(`Currency not provided`, {cause: {statusCode: 400}});
-            }
 
             if (account.wallets.every(wallet => wallet.currency !== currency)) {
                 throw new Error(`No wallet with currency ${currency} found for account ${accountId}`,
